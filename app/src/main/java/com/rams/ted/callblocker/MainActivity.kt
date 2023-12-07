@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
         )
 
         if (Build.VERSION.SDK_INT >= 26) {
-            /*permissions += android.Manifest.permission.ANSWER_PHONE_CALLS*/
+            permissions += android.Manifest.permission.ANSWER_PHONE_CALLS
             permissions += android.Manifest.permission.READ_PHONE_NUMBERS
         }
 
@@ -93,7 +93,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             CallBlockerTheme {
 
-                val blockList = sp?.getString("blockList", null)?.toBlockList() ?: BlockList()
+                val blockList = sp.getString("blockList", null)?.toBlockList() ?: BlockList()
 
                 var blockListNumbers by remember {
                     mutableStateOf(
@@ -137,6 +137,7 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         blockNumber = {
+                            sp.edit().putBoolean("blockCalls", true).apply()
                             if (blockList.numbers.contains(it)) {
                                 Toast.makeText(
                                     this,
@@ -147,6 +148,7 @@ class MainActivity : ComponentActivity() {
                                 val tempList = blockList.numbers.toMutableList()
                                 tempList.add(it)
                                 blockListNumbers = tempList.toList()
+                                blockList.numbers = tempList.toList()
                                 sp.edit().putString("blockList", blockList.getAsString()).apply()
                                 Toast.makeText(
                                     this,
@@ -248,7 +250,8 @@ fun CallBlockerUI(
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .padding(horizontal = 10.dp, vertical = 5.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            fontFamily = satoshiFont
         )
 
         OutlinedTextField(

@@ -17,6 +17,7 @@ class CallScreeningService : CallScreeningService() {
 
     override fun onScreenCall(callDetails: Call.Details) {
 
+        Log.d("Call Screening", "onScreenCall: screening the call")
         val sp = getSharedPreferences("prefs", MODE_PRIVATE)
         val blockList = sp?.getString("blockList", null)?.toBlockList()
 
@@ -68,7 +69,7 @@ class CallScreeningService : CallScreeningService() {
                 } else if(number.length>10){
                     number = number.toString().substring(number.length - 10)
                     Log.d("Call Screening", "onScreenCall: number trimmed = $number")
-                    if (number.length > 10 && it.numbers.contains(number)) {
+                    if (it.numbers.contains(number)) {
                         shouldRejectCall = true
                     }
                 }
@@ -83,4 +84,5 @@ class CallScreeningService : CallScreeningService() {
         }
         respondToCall(callDetails, response.build())
     }
+
 }
